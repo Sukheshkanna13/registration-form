@@ -1,0 +1,65 @@
+/* Apply styles to the entire document */
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('bg.jpg');
+    background-size: cover; 
+    background-repeat: no-repeat; 
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: rgb(242, 234, 220); /* Add a semi-transparent white background */
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(180, 224, 236, 0.879);
+}
+
+.container h1 {
+    font-size: 32px;
+    text-align: center;
+    color: rgba(111, 43, 43, 0.6);
+    margin-bottom: 20px;
+}
+input[type="text"], input[type="password"]{
+    width: 100%;
+    font-size: 18px;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    background-color: #f7f7f7;
+    transition: border-bottom-color 0.4s ease;
+    border-radius:30px;
+}
+
+input[type="submit"] {
+    width: 100%;
+    background-color: rgb(137, 226, 207);
+    color: black;
+    border: none;
+    padding: 15px;
+    margin-top: 20px;
+    font-size: 20px;
+    border-radius: 32px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Change the submit button color on hover */
+input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Add some spacing between input fields and submit button */
+.container input {
+    margin-bottom: 20px;
+}
+
+/* Add some padding and border-radius to the container */
+.container {
+    padding: 30px;
+    border-radius: 10px;
+}

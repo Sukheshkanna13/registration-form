@@ -1,50 +1,71 @@
-var express=require("express")
-var bodyParser=require("body-parser")
-var mongoose=require("mongoose")
+const express = require("express");
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const path = require("path");
 
-const app=express()
+const app = express();
 
-app.use(bodyParser.json())
-app.use(express.static('public'))
+// Middleware
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
-    extended:true
-}))
+    extended: true
+}));
 
-mongoose.connect('mongodb://localhost:27017/Database')
-var db=mongoose.connection
-db.on('error',()=> console.log("Error in Connecting to Database"))
-db.once('open',()=> console.log("Connected to Database"))
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.post("/sign_up",(req,res) => {
-    var name= req.body.name
-    var age=req.body.age
-    var email=req.body.email
-    var phno=req.body.phno
-    var gender=req.body.gender
-    var password=req.body.password
+// Connect to MongoDB
+const uri = "mongodb+srv://sukhesh13:MONGO_PASSWORD@20013@manga-database.hnzyrzh.mongodb.net/?retryWrites=true&w=majority&appName=Manga-Database";
+mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log('Connected to MongoDB');
+}).catch(err => {
+    console.error('Error connecting to MongoDB:', err);
+});
 
-    var data={
-        "name":name,
-        "age":age,
-        "email":email,
-        "phno":phno,
-        "gender":gender,
-        "password":password
-    }
-    db.collection('users').insertOne(data,(err,collection) => {
-        if(err){
-            throw err;
+const db = mongoose.connection;
+db.on('error', () => console.log("Error in Connecting to Database"));
+
+// Define schema and model for users
+const userSchema = new mongoose.Schema({
+    name: String,
+    age: Number,
+    email: String,
+    phno: String,
+    gender: String,
+    password: String
+});
+
+const User = mongoose.model('User', userSchema);
+
+// Route to handle user registration
+app.post("/sign_up", (req, res) => {
+    const { name, age, email, phno, gender, password } = req.body;
+
+    const newUser = new User({
+        name,
+        age,
+        email,
+        phno,
+        gender,
+        password
+    });
+
+    newUser.save((err, user) => {
+        if (err) {
+            console.error("Error inserting record:", err);
+            return res.status(500).send("Error inserting record");
         }
-        console.log("Record Inserted Succesfully")
-    })
-    return res.redirect('signup_successful.html')
-})
+        console.log("Record Inserted Successfully");
+        // Redirect to signup_successful.html after successful save
+        res.sendFile(path.join(__dirname, "signup_successful.html"));
+    });
+});
 
-app.get("/",(req,res) => {
-    res.set({
-        "Allow-acces-Allow-Origin":'*'
-    })
-    return res.redirect('index.html')
-}).listen(3000);
-
-console.log("Listening on port 3000")
+// Start server
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Listening on port ${PORT}`);
+});
